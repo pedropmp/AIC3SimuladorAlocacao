@@ -29,6 +29,30 @@ def checa_lista(lista_programas, ciclo):
             entra.append(lista_programas)
     return (entra)
 
+def checa_inicio_fila_principal (lista_principal):
+    if len(lista_principal) != 0:
+        return (0)
+    else:
+        return(1)
+
+def ff (lista_principal, memoria):
+    pos, qnt = 0
+    # percorre lista principal
+    for processo in lista_principal:
+        for cont in range (0, len(memoria)):
+            # verifica se espaço da memória x está vazio
+            if memoria[cont] == 0:
+                pos = cont
+                qnt += 1
+                # verifica se programa pode ser alocado
+                if qnt == lista_principal:
+                    return(True, pos, qnt)
+
+            else:
+                pos = cont
+                qnt = 0
+
+        return(False, 0)
 
 # def checa_inicio_fila_principal (lista_principal, ciclo):
 
