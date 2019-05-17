@@ -1,3 +1,5 @@
+import MemConfig
+
 def inicializacao():
     # abre arquivo de entrada
     arq = open("entrada.txt", "r")
@@ -8,29 +10,32 @@ def inicializacao():
     for linha in conteudo:
         programas.append(linha.split(' '))
     ciclo = 0
-
+    # torna a lista de entrada uma lista de inteiros
     inteiros = []
     for programa in programas[:-1]:
         linha = []
         for dado in programa:
             linha.append(int(dado))
         inteiros.append(linha)
+    # cria lista de zeros para representar memoria
     return inteiros, ciclo
 
 
-def checa_lista (lista_programas, ciclo):
-	entra = []
-	# percorre lista de programas e adiciona os que entram no ciclo a lista
-	for i in range (0, len(lista_programas), 1):
-    	if lista_programas[1] == ciclo:
-        	entra.append(lista_programas)
-	return(entra)
+def checa_lista(lista_programas, ciclo):
+    entra = []
+    # percorre lista de programas e adiciona os que entram no ciclo a lista
+    for i in range(0, len(lista_programas), 1):
+        if lista_programas[1] == ciclo:
+            entra.append(lista_programas)
+    return (entra)
 
-#def checa_inicio_fila_principal (lista_principal, ciclo):
+
+# def checa_inicio_fila_principal (lista_principal, ciclo):
 
 fila_principal = []
 
 programas, ciclo = inicializacao()
 fila_principal += checa_lista(programas, ciclo)
 
-print(programas, ciclo)
+print(programas, ciclo)
+print(tamanho)
