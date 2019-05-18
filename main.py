@@ -1,6 +1,11 @@
-import MemConfig
+from MemConfig import TAM_BLOCO, TAM_MEM
 
 def inicializacao():
+    global executados, executandos, lista_principal, memoria, ciclo, inteiros
+    
+    # cria lista de zeros para representar memoria
+    memoria = [0] * int(TAM_MEM / TAM_BLOCO)
+
     # abre arquivo de entrada
     arq = open("entrada", "r")
     # separa o arquivo por linhas
@@ -17,9 +22,8 @@ def inicializacao():
         for dado in programa:
             linha.append(int(dado))
         inteiros.append(linha)
-    # cria lista de zeros para representar memoria
-    return inteiros, ciclo
-
+        
+        
 def checa_lista(lista_programas, ciclo):
     entra = []
     # percorre lista de programas e adiciona os que entram no ciclo a lista
@@ -84,8 +88,5 @@ def executa (executando):
                 memoria[lista_principal[pos_programa][4]+j] = 0
             executado.append(executando[i])
             executando.pop(i)
-
-fila_principal = []
-
-programas, ciclo = inicializacao()
-fila_principal += checa_lista(programas, ciclo)
+            
+            
