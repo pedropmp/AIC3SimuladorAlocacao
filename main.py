@@ -1,4 +1,11 @@
 from MemConfig import TAM_BLOCO, TAM_MEM
+#0- IP
+#1- Ciclo de chegada
+#2- Ciclos execução
+#3- Tamanho
+#4- Tempo de espera
+#5- Qntd Miss
+#6- Posição na memória
 
 def inicializacao():
     global executados, executandos, lista_principal, memoria, ciclo, inteiros
