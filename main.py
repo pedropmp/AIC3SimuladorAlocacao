@@ -8,8 +8,8 @@ from MemConfig import TAM_BLOCO, TAM_MEM
 #6- Posição na memória
 
 def inicializacao():
-    global executados, executandos, lista_principal, memoria, ciclo, inteiros
-    
+    global executado, executando, lista_principal, memoria, ciclo, lista_programas
+
     # cria lista de zeros para representar memoria
     memoria = [0] * int(TAM_MEM / TAM_BLOCO)
 
@@ -18,17 +18,17 @@ def inicializacao():
     # separa o arquivo por linhas
     conteudo = arq.read().split('\n')
     # separa as linhas em posicoes acessiveis ID, Tchegada, Tam, Texecucao
-    programas = []
+    entrada = []
     for linha in conteudo:
-        programas.append(linha.split(' '))
+        entrada.append(linha.split(' '))
     ciclo = 0
     # torna a lista de entrada uma lista de inteiros
-    inteiros = []
-    for programa in programas[:-1]:
+    lista_programas = []
+    for programa in entrada[:-1]:
         linha = []
         for dado in programa:
             linha.append(int(dado))
-        inteiros.append(linha)
+        lista_programas.append(linha)
         
         
 def checa_lista():
