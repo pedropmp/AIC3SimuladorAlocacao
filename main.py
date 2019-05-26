@@ -1,20 +1,28 @@
+# Listas com processos:
 #0- IP
 #1- Ciclo de chegada
 #2- Ciclos para executar / ciclo em que foi executado
 #3- Tamanho
-#4- Tempo de espera
+#4- Tempo de espera (até entrar na memória)
 #5- Qntd Miss
 #6- Posição na memória
+
+# Espaços:
+#0- Posição
+#1- Tamanho
+
+#- Utilização da memória
 
 from MemConfig import TAM_BLOCO, TAM_MEM
 
 def inicializacao():
-    global lista_programas, lista_principal, memoria, executados, executando, ciclo
+    global lista_programas, lista_principal, memoria, executados, executando, espacos, ciclo
     lista_principal = []
     executados = []
     processador = []
     memoria = []
     executando = []
+    espacos = []
     ciclo = 0
 
     # cria lista de zeros para representar memoria
@@ -54,25 +62,87 @@ def checa_inicio_fila():
         return(False)
 
 
+def mapeia_memoria():   # mapeia memória e registra posições e quantidades de espaços vazios (espacos 0 e 1)
+    # esvazia lista de espaços
+    while len(espacos) > 0:
+        espacos.pop(0)
+
+    # busca séries de espaços e aloca na lista espaços
+    aux = [0,0]
+    for cont in range (0, len(memoria)):
+        if memoria[cont] == 0:
+            if aux[1] != 0:
+                aux[1] += 1
+            else:
+                aux[0] = cont
+                aux[1] = 1
+        else:
+            if aux[1] != 0:
+                espacos.append(aux)
+                aux = [0,0]
+
+    if aux[1]:
+        espacos.append(aux)
+
+
 def ff():
     # percorre lista principal
     for pos_programa in range (0, len(lista_principal)):
-        pos_memo = 0
-        qnt = 0
-        # percorre memória buscando primeiro espaço para alocar processo
-        for cont in range (0, len(memoria)):
-            if memoria[cont] == 0:
-                if qnt != 0:
-                    qnt += 1
-                else:
-                    pos_memo = cont
-                    qnt = 1
-                # verifica se programa pode ser alocado no espaço
-                if qnt == lista_principal[pos_programa][3]:
-                    aloca(pos_programa, pos_memo)
+        # verifica se programa pode ser alocado no espaço
+        for cont in range (0, len(espacos)):
+            if espacos[cont][1] >= lista_principal[pos_programa][3]:
+                if espacos[cont][1] >= lista_principal[pos_programa][3]:
+                    aloca(pos_programa, espacos[cont][0])
                     return
-            else:
-                qnt = 0
+
+        lista_principal[pos_programa][5] += 1
+
+
+def bf():
+    # percorre lista principal e busca processo para alocar
+    for pos_programa in range (0, len(lista_principal)):
+        bf_check = False
+        bf = -1
+        # verifica se programa pode ser alocado no espaço
+        for cont in range (0, len(espacos)):
+            if espacos[cont][1] >= lista_principal[pos_programa][3]:
+                if bf != -1:
+                    if (espacos[cont][1] - lista_principal[pos_programa][3]) < espacos[bf][1]:
+                        bf = cont
+                else:
+                    bf = cont
+                    bf_check = True
+
+        if bf_check:
+            aloca(pos_programa, espacos[bf][0])
+            bf_check = False
+            bf = -1
+            return
+
+        lista_principal[pos_programa][5] += 1
+
+
+def wf():
+    # percorre lista principal e busca processo para alocar
+    for pos_programa in range (0, len(lista_principal)):
+        wf_check = False
+        wf = -1
+        # verifica se programa pode ser alocado no espaço
+        for cont in range (0, len(espacos)):
+            if espacos[cont][1] >= lista_principal[pos_programa][3]:
+                if wf != -1:
+                    if (espacos[cont][1] - lista_principal[pos_programa][3]) > espacos[wf][1]:
+                        wf = cont
+                else:
+                    wf = cont
+                    wf_check = True
+
+        if wf_check:
+            aloca(pos_programa, espacos[wf][0])
+            wf_check = False
+            wf = -1
+            return
+
         lista_principal[pos_programa][5] += 1
 
 
@@ -80,10 +150,7 @@ def aloca(pos_programa, pos_memo):
     lista_principal[pos_programa].append(pos_memo)
     executando.append(lista_principal[pos_programa])
     lista_principal.pop(pos_programa)
-    print('tamanho: ',executando[-1][3])
-    print('pos memo: ',executando[-1][6])
     for i in range (0, executando[-1][3]):
-        print(pos_memo + i)
         memoria[pos_memo + i] = 1
 
 
@@ -103,6 +170,8 @@ def executa():
 
 def prox_ciclo():
 
+    global ciclo
+    ciclo += 1
     for programa in lista_principal:
         programa[4] += 1
     if len(executados) == len(lista_programas):
@@ -112,24 +181,34 @@ def prox_ciclo():
 
 #================================= MAIN =================================#
 
-########### FF ###########
+lista = ["Frist Fit", "Best Fit", "Worst Fit"]
 
-run = True
-inicializacao()
+for politica in lista:
 
-while(run):
-    checa_lista()
-    if checa_inicio_fila():
-        ff()
-    executa()
+    print(politica)
 
-    print("\nCiclo: ", ciclo)
-    print("Memoria: ", memoria)
-    print("Lista Principal: ", lista_principal)
-    print("Executando: ", executando)
-    print("Executados: ", executados)
+    run = True
+    inicializacao()
+    while(run):
+        checa_lista()
+        mapeia_memoria()
+        if checa_inicio_fila():
+            if politica == "Frist Fit":
+                ff()
+            elif politica == "Best Fit":
+                bf()
+            else: #politica == "Worst Fit"
+                wf()
+        executa()
+        mapeia_memoria()
 
-    ciclo += 1
-    run = prox_ciclo()
+        print("\nCiclo: ", ciclo)
+        print("Memoria: ", memoria.count(1))
+        print("Espaços: ", espacos)
+        print("Lista Principal: ", lista_principal)
+        print("Executando: ", executando)
+        print("Uso Memo: {:.2f}%".format((memoria.count(1)/TAM_MEM)*100))
 
-##########################
+        run = prox_ciclo()
+
+    print("\n")
