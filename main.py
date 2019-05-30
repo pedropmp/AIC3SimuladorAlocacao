@@ -179,6 +179,15 @@ def prox_ciclo():
     return True
 
 
+def imprime():    
+    print("\nCiclo: ", ciclo)
+    print("Memoria: ", memoria.count(1))
+    print("Espaços: ", espacos)
+    print("Lista Principal: ", lista_principal)
+    print("Executando: ", executando)
+    print("Uso Memo: {:.2f}%".format((memoria.count(1)/TAM_MEM)*100))
+    print("\n")
+
 #================================= MAIN =================================#
 
 lista = ["Frist Fit", "Best Fit", "Worst Fit"]
@@ -202,13 +211,5 @@ for politica in lista:
         executa()
         mapeia_memoria()
 
-        print("\nCiclo: ", ciclo)
-        print("Memoria: ", memoria.count(1))
-        print("Espaços: ", espacos)
-        print("Lista Principal: ", lista_principal)
-        print("Executando: ", executando)
-        print("Uso Memo: {:.2f}%".format((memoria.count(1)/TAM_MEM)*100))
-
+        imprime()
         run = prox_ciclo()
-
-    print("\n")
