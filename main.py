@@ -179,22 +179,41 @@ def prox_ciclo():
     return True
 
 
-def imprime():    
-    print("\nCiclo: ", ciclo)
-    print("Memoria: ", memoria.count(1))
-    print("Espaços: ", espacos)
-    print("Lista Principal: ", lista_principal)
-    print("Executando: ", executando)
-    print("Uso Memo: {:.2f}%".format((memoria.count(1)/TAM_MEM)*100))
-    print("\n")
+def imprime():
+    saida.write("\nCiclo:\n{}\n".format(ciclo))
+    saida.write("\nMemoria:\n{}\n".format(memoria.count(1)))
+    saida.write("\nEspacos:\n{}\n".format(espacos))
+    saida.write("\nLista principal:\n")
+    saida_log(lista_principal)
+    saida.write("\nExecutando:\n")
+    saida_log(executando)
+    saida.write("\nExecutados:\n")
+    saida_log(executados)
+    saida.write("\nUso Memo:\n{:.2f}%\n\n".format((memoria.count(1)/TAM_MEM)*100))
+
+    # nao usaremos? saida.write("Memoria: {}".format(memoria))
+
+
+def saida_log(lista):
+    if isinstance(lista, list):
+        if not lista:
+            saida.write("VAZIO\n")
+        for processo in lista:
+            for dado in processo:
+                saida.write(str(dado))
+                saida.write(" ")
+            saida.write("\n")
 
 #================================= MAIN =================================#
 
-lista = ["Frist Fit", "Best Fit", "Worst Fit"]
+
+saida = open("saida.txt", "w+")
+lista = ["First Fit", "Best Fit", "Worst Fit"]
 
 for politica in lista:
 
     print(politica)
+    saida.write("{}\n".format(politica))
 
     run = True
     inicializacao()
@@ -213,3 +232,5 @@ for politica in lista:
 
         imprime()
         run = prox_ciclo()
+
+saida.close()
