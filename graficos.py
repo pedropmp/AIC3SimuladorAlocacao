@@ -65,6 +65,8 @@ def plota():
         if len(x[i]) > len(x[maior]):
             maior = i
 
+    total = []
+
     # deixando componentes x e y com mesmos tamanhos
     for lista in y_espera:
         while len(x[maior]) > len(lista):
