@@ -11,9 +11,8 @@
 #0- Posição
 #1- Tamanho
 
-#- Utilização da memória
-
 from MemConfig import TAM_BLOCO, TAM_MEM
+from graficos import*
 
 def inicializacao():
     global lista_programas, lista_principal, memoria, executados, executando, espacos, ciclo
@@ -175,6 +174,8 @@ def prox_ciclo():
     for programa in lista_principal:
         programa[4] += 1
     if len(executados) == len(lista_programas):
+        # exporta parâmetros
+        politica_graficos()
         return False
     return True
 
@@ -204,16 +205,21 @@ def saida_log(lista):
                 saida.write(" ")
             saida.write("\n")
 
+
 #================================= MAIN =================================#
 
+lista = ["Frist Fit", "Best Fit", "Worst Fit"]
 
 saida = open("saida.txt", "w+")
-lista = ["First Fit", "Best Fit", "Worst Fit"]
+
+
+# chamada variáveis para montagem do gráfico
+global_graficos()
 
 for politica in lista:
 
     print(politica)
-    saida.write("{}\n".format(politica))
+    inicio_graficos()
 
     run = True
     inicializacao()
@@ -230,7 +236,11 @@ for politica in lista:
         executa()
         mapeia_memoria()
 
+        # envia parâmetros para a montagem do gráfico
+        parametros_graficos(lista_principal, memoria, espacos, ciclo)
+
         imprime()
         run = prox_ciclo()
 
-saida.close()
+# plota gráficos
+plota()
