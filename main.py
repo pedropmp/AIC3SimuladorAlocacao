@@ -181,16 +181,17 @@ def prox_ciclo():
 
 
 def imprime():
-    saida.write("\nCiclo:\n{}\n".format(ciclo))
-    saida.write("\nMemoria:\n{}\n".format(memoria.count(1)))
-    saida.write("\nEspacos:\n{}\n".format(espacos))
-    saida.write("\nLista principal:\n")
+    # saida.write("Ciclo:\n{}\n".format(ciclo))
+    saida.write("{}\n".format(ciclo))
+    # saida.write("{}\n".format(memoria.count(1)))  # Memoria:\n
+    # saida.write("{}\n".format(espacos))  # Espacos:\n
+    # saida.write("Lista principal:\n")
     saida_log(lista_principal)
-    saida.write("\nExecutando:\n")
+    # saida.write("Executando:\n")
     saida_log(executando)
-    saida.write("\nExecutados:\n")
+    # saida.write("Executados:\n")
     saida_log(executados)
-    saida.write("\nUso Memo:\n{:.2f}%\n\n".format((memoria.count(1)/TAM_MEM)*100))
+    saida.write("{:.2f}%\n\n".format((memoria.count(1)/TAM_MEM)*100))  # Uso Memo:\n
 
     # nao usaremos? saida.write("Memoria: {}".format(memoria))
 
