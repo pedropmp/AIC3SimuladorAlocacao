@@ -94,7 +94,8 @@ def ff():
                     aloca(pos_programa, espacos[cont][0])
                     return
 
-        lista_principal[pos_programa][5] += 1
+        if memoria.count(0) > lista_principal[pos_programa][3]:
+            lista_principal[pos_programa][5] += 1
 
 
 def bf():
@@ -118,7 +119,8 @@ def bf():
             bf = -1
             return
 
-        lista_principal[pos_programa][5] += 1
+        if memoria.count(0) > lista_principal[pos_programa][3]:
+            lista_principal[pos_programa][5] += 1
 
 
 def wf():
@@ -142,7 +144,8 @@ def wf():
             wf = -1
             return
 
-        lista_principal[pos_programa][5] += 1
+        if memoria.count(0) > lista_principal[pos_programa][3]:
+            lista_principal[pos_programa][5] += 1
 
 
 def aloca(pos_programa, pos_memo):
