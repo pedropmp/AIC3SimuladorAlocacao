@@ -51,6 +51,7 @@ def checa_lista():
             lista_principal.append(lista_programas[i])
             lista_principal[-1].append(0)
             lista_principal[-1].append(0)
+            lista_principal[-1].append(0)
 
 
 def checa_inicio_fila():
@@ -149,7 +150,7 @@ def wf():
 
 
 def aloca(pos_programa, pos_memo):
-    lista_principal[pos_programa].append(pos_memo)
+    lista_principal[pos_programa][6] = pos_memo
     executando.append(lista_principal[pos_programa])
     lista_principal.pop(pos_programa)
     for i in range (0, executando[-1][3]):
@@ -183,50 +184,77 @@ def prox_ciclo():
     return True
 
 
-def imprime():
-    # saida.write("Ciclo:\n{}\n".format(ciclo))
-    saida.write("{}\n".format(ciclo))
-    # saida.write("{}\n".format(memoria.count(1)))  # Memoria:\n
-    # saida.write("{}\n".format(espacos))  # Espacos:\n
-    # saida.write("Lista principal:\n")
-    saida_log(lista_principal)
-    # saida.write("Executando:\n")
-    saida_log(executando)
-    # saida.write("Executados:\n")
-    saida_log(executados)
-    saida.write("{:.2f}%\n\n".format((memoria.count(1)/TAM_MEM)*100))  # Uso Memo:\n
+def abre_arquivo(tipo, politica): # abre ou fecha arquivos de saída
+    global saida_ff, saida_bf, saida_wf
 
-    # nao usaremos? saida.write("Memoria: {}".format(memoria))
+    # abre arquivos de saída
+    if tipo:
+        if politica == "Frist Fit":
+            saida_ff = open("saida_ff.txt", "w+")
+        elif politica == "Best Fit":
+            saida_bf = open("saida_bf.txt", "w+")
+        elif politica == "Worst Fit":
+            saida_wf = open("saida_wf.txt", "w+")
+
+    # fecha arquivos de saída
+    else:
+        if politica == "Frist Fit":
+            saida_ff.close()
+        elif politica == "Best Fit":
+            saida_bf.close()
+        elif politica == "Worst Fit":
+            saida_wf.close()
 
 
-def saida_log(lista):
+def imprime(politica):
+    global lista_principal, lista_principal, executados, executados, ciclo
+
+    if politica == "Frist Fit":
+        arquivo = saida_ff
+    elif politica == "Best Fit":
+        arquivo = saida_bf
+    elif politica == "Worst Fit":
+        arquivo = saida_wf
+
+    uso_memo = int((memoria.count(1)/TAM_MEM)*100) # Uso Memo
+
+    saida_log(ciclo, arquivo)
+    saida_log(lista_principal, arquivo)
+    saida_log(executando, arquivo)
+    saida_log(executados, arquivo)
+    saida_log(uso_memo, arquivo)
+
+
+def saida_log(lista, arquivo):
     if isinstance(lista, list):
-        if not lista:
-            saida.write("VAZIO\n")
         for processo in lista:
             for dado in processo:
-                saida.write(str(dado))
-                saida.write(" ")
-            saida.write("\n")
+                arquivo.write(str(dado))
+                arquivo.write(" ")
+        arquivo.write("\n")
+    else:
+        if isinstance(lista, int):
+            arquivo.write("{}\n".format(lista))
+        else:
+            arquivo.write("\n")
 
 
 #================================= MAIN =================================#
 
+
+# lista de políticas aplicadas
 lista = ["Frist Fit", "Best Fit", "Worst Fit"]
 
-saida = open("saida.txt", "w+")
-
-
-# chamada variáveis para montagem do gráfico
 global_graficos()
 
 for politica in lista:
 
-    print(politica)
     inicio_graficos()
+    abre_arquivo(True, politica)
 
     run = True
     inicializacao()
+
     while(run):
         checa_lista()
         mapeia_memoria()
@@ -235,16 +263,17 @@ for politica in lista:
                 ff()
             elif politica == "Best Fit":
                 bf()
-            else: #politica == "Worst Fit"
+            elif politica == "Worst Fit":
                 wf()
         executa()
         mapeia_memoria()
 
-        # envia parâmetros para a montagem do gráfico
-        parametros_graficos(lista_principal, memoria, espacos, ciclo)
+        parametros_graficos(lista_principal, memoria, espacos, executados, ciclo)
+        imprime(politica)
 
-        imprime()
         run = prox_ciclo()
+
+    abre_arquivo(False, politica)
 
 # plota gráficos
 plota()
