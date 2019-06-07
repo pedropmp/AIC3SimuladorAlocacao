@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from MemConfig import TAM_BLOCO, TAM_MEM
 
-def global_graficos():
+def global_graficos(): # inicia variáveis finais dos gráficos
     global y_espera, y_quantidade, y_tamanho, y_memoria, y_miss, x
     y_espera = []
     y_quantidade = []
@@ -12,18 +12,17 @@ def global_graficos():
     x = []
 
 
-def inicio_graficos():
+def inicio_graficos(): # inicia variáveis de cada política dos gráficos
     global tempo_medio_espera, qnt_buracos, tam_medio_buracos, uso_memo, lista_ciclo, erro_aloca
     tempo_medio_espera = []
     qnt_buracos = []
     tam_medio_buracos = []
     uso_memo = []
     lista_ciclo = []
-    erro_aloca = []
+    erro_aloca = [0]
 
 
-def parametros_graficos(lista_principal, memoria, espacos, executados, ciclo):
-
+def parametros_graficos(lista_principal, memoria, espacos, executados, ciclo): # aloca parâmetros do ciclo
     # tamanho médio dos espaços
     media = 0
     if espacos:
@@ -38,7 +37,7 @@ def parametros_graficos(lista_principal, memoria, espacos, executados, ciclo):
     if lista_principal:
         for i in lista_principal:
             espera += i[4]
-        espera /= len(lista_principal)
+        #espera /= len(lista_principal)
     else:
         espera = 0
 
@@ -46,7 +45,10 @@ def parametros_graficos(lista_principal, memoria, espacos, executados, ciclo):
     miss = 0
     if lista_principal:
         for i in lista_principal:
-            miss += i[5]
+            miss = miss + i[5]
+    if ciclo:
+        miss += erro_aloca[ciclo-1]
+
 
     tempo_medio_espera.append(espera)
     qnt_buracos.append(len(espacos))
@@ -56,17 +58,18 @@ def parametros_graficos(lista_principal, memoria, espacos, executados, ciclo):
     erro_aloca.append(miss)
 
 
-def politica_graficos():
+def politica_graficos(): # aloca parametros da política
 
     y_espera.append(tempo_medio_espera)
     y_quantidade.append(qnt_buracos)
     y_tamanho.append(tam_medio_buracos)
     y_memoria.append(uso_memo)
+    erro_aloca.pop(-1)
     y_miss.append(erro_aloca)
     x.append(lista_ciclo)
 
 
-def plota():
+def plota(): # plota gráficos
     global y_espera, y_quantidade, y_tamanho, y_memoria, y_miss, x
 
     # definindo qual foi o maior tempo de execução para gerar os gráficos
@@ -173,21 +176,21 @@ def plota():
 
     # gráfico 4: tempo médio de espera
     plt.subplot(3, 1, 1)
-    plt.ylim([0,30])
+    plt.ylim([0,70])
     plt.plot(x, y_espera[0], label="FF", color="blue")
-    plt.title('Tempo médio de espera para entrar na memória\n')
+    plt.title('Tempo de espera por ciclo para entrar na memória\n')
     plt.grid(True)
     plt.legend()
 
     plt.subplot(3, 1, 2)
-    plt.ylim([0,30])
+    plt.ylim([0,70])
     plt.plot(x, y_espera[1], label="BF", color="green")
     plt.ylabel('Tempo')
     plt.grid(True)
     plt.legend()
 
     plt.subplot(3, 1, 3)
-    plt.ylim([0,30])
+    plt.ylim([0,70])
     plt.plot(x, y_espera[2], label="WF", color="red")
     plt.xlabel('Ciclo')
     plt.grid(True)
@@ -198,21 +201,21 @@ def plota():
 
     # gráfico 5: quantidade de miss
     plt.subplot(3, 1, 1)
-    plt.ylim([0,60])
+    #plt.ylim([0,60])
     plt.plot(x, y_miss[0], label="FF", color="blue")
     plt.title('Quantidade de erros de alocação por ciclo\n')
     plt.grid(True)
     plt.legend()
 
     plt.subplot(3, 1, 2)
-    plt.ylim([0,60])
+    #plt.ylim([0,60])
     plt.plot(x, y_miss[1], label="BF", color="green")
     plt.ylabel('Erros')
     plt.grid(True)
     plt.legend()
 
     plt.subplot(3, 1, 3)
-    plt.ylim([0,60])
+    #plt.ylim([0,60])
     plt.plot(x, y_miss[2], label="WF", color="red")
     plt.xlabel('Ciclo')
     plt.grid(True)
