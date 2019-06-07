@@ -14,7 +14,7 @@
 from MemConfig import TAM_BLOCO, TAM_MEM
 from graficos import*
 
-def inicializacao():
+def inicializacao(): # inicia variáveis e lê arquivo
     global lista_programas, lista_principal, memoria, executados, executando, espacos, ciclo
     lista_principal = []
     executados = []
@@ -44,7 +44,7 @@ def inicializacao():
         lista_programas.append(linha)
 
 
-def checa_lista():
+def checa_lista(): # copia do arq entrada p a lista principal
     # percorre lista de programas e adiciona os que entram no ciclo a lista
     for i in range(0, len(lista_programas)):
         if lista_programas[i][1] == ciclo:
@@ -54,7 +54,7 @@ def checa_lista():
             lista_principal[-1].append(0)
 
 
-def checa_inicio_fila():
+def checa_inicio_fila(): # checa se inínico da fila principal está vazio
     # checa se há programas na lista principal
     if len(lista_principal) != 0:
         return (True)
@@ -157,7 +157,7 @@ def aloca(pos_programa, pos_memo):
         memoria[pos_memo + i] = 1
 
 
-def executa():
+def executa(): # reduz ciclo de execução
     try:
         for i in range (0, len(executando)):
             executando[i][2] -= 1
@@ -171,7 +171,7 @@ def executa():
         return
 
 
-def prox_ciclo():
+def prox_ciclo(): # incrementa ciclo e checa fim da política
 
     global ciclo
     ciclo += 1
@@ -206,7 +206,7 @@ def abre_arquivo(tipo, politica): # abre ou fecha arquivos de saída
             saida_wf.close()
 
 
-def imprime(politica):
+def imprime(politica): # chama função para escrever listas ou escreve política
     global lista_principal, lista_principal, executados, executados, ciclo
 
     if politica == "Frist Fit":
@@ -225,7 +225,7 @@ def imprime(politica):
     saida_log(uso_memo, arquivo)
 
 
-def saida_log(lista, arquivo):
+def saida_log(lista, arquivo): # função para escrever listas
     if isinstance(lista, list):
         for processo in lista:
             for dado in processo:
@@ -268,7 +268,7 @@ for politica in lista:
         executa()
         mapeia_memoria()
 
-        parametros_graficos(lista_principal, memoria, espacos, executados, ciclo)
+        parametros_graficos(lista_principal, memoria, espacos, executados, executando, ciclo)
         imprime(politica)
 
         run = prox_ciclo()
