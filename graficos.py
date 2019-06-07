@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import numpy as np
 from MemConfig import TAM_BLOCO, TAM_MEM
 
 def global_graficos(): # inicia variáveis finais dos gráficos
@@ -22,7 +21,7 @@ def inicio_graficos(): # inicia variáveis de cada política dos gráficos
     erro_aloca = [0]
 
 
-def parametros_graficos(lista_principal, memoria, espacos, executados, ciclo): # aloca parâmetros do ciclo
+def parametros_graficos(lista_principal, memoria, espacos, executados, executando, ciclo): # aloca parâmetros do ciclo
     # tamanho médio dos espaços
     media = 0
     if espacos:
@@ -46,9 +45,12 @@ def parametros_graficos(lista_principal, memoria, espacos, executados, ciclo): #
     if lista_principal:
         for i in lista_principal:
             miss = miss + i[5]
-    if ciclo:
-        miss += erro_aloca[ciclo-1]
-
+    if executando:
+        for i in executando:
+            miss = miss + i[5]
+    if executados:
+        for i in executados:
+            miss = miss + i[5]
 
     tempo_medio_espera.append(espera)
     qnt_buracos.append(len(espacos))
@@ -200,22 +202,23 @@ def plota(): # plota gráficos
     plt.show()
 
     # gráfico 5: quantidade de miss
+    y = 180
     plt.subplot(3, 1, 1)
-    #plt.ylim([0,60])
+    plt.ylim([0,y])
     plt.plot(x, y_miss[0], label="FF", color="blue")
     plt.title('Quantidade de erros de alocação por ciclo\n')
     plt.grid(True)
     plt.legend()
 
     plt.subplot(3, 1, 2)
-    #plt.ylim([0,60])
+    plt.ylim([0,y])
     plt.plot(x, y_miss[1], label="BF", color="green")
     plt.ylabel('Erros')
     plt.grid(True)
     plt.legend()
 
     plt.subplot(3, 1, 3)
-    #plt.ylim([0,60])
+    plt.ylim([0,y])
     plt.plot(x, y_miss[2], label="WF", color="red")
     plt.xlabel('Ciclo')
     plt.grid(True)
