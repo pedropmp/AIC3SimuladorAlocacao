@@ -124,7 +124,7 @@ def plota(): # plota gráficos
     plt.legend()
 
     plt.savefig('1uso_memo.png')
-    plt.show()
+    plt.clf()
 
     # gráfico 2: quantidade de buracos
     plt.subplot(3, 1, 1)
@@ -149,7 +149,7 @@ def plota(): # plota gráficos
     plt.legend()
 
     plt.savefig('2qnt_buracos.png')
-    plt.show()
+    plt.clf()
 
     # gráfico 3: tamanho dos buracos
     plt.subplot(3, 1, 1)
@@ -174,7 +174,7 @@ def plota(): # plota gráficos
     plt.legend()
 
     plt.savefig('3tam_buracos.png')
-    plt.show()
+    plt.clf()
 
     # gráfico 4: tempo médio de espera
     plt.subplot(3, 1, 1)
@@ -199,7 +199,7 @@ def plota(): # plota gráficos
     plt.legend()
 
     plt.savefig('4media_espera.png')
-    plt.show()
+    plt.clf()
 
     # gráfico 5: quantidade de miss
     y = 180
@@ -225,4 +225,4 @@ def plota(): # plota gráficos
     plt.legend()
 
     plt.savefig('5erros.png')
-    plt.show()
+    plt.clf()
