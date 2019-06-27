@@ -12,13 +12,13 @@
 #1- Tamanho
 
 from MemConfig import TAM_BLOCO, TAM_MEM
-from graficos import*
+from graficos import *
 
-def inicializacao(): # inicia variáveis e lê arquivo
+
+def inicializacao():  # inicia variáveis e lê arquivo
     global lista_programas, lista_principal, memoria, executados, executando, espacos, ciclo
     lista_principal = []
     executados = []
-    processador = []
     memoria = []
     executando = []
     espacos = []
@@ -57,9 +57,9 @@ def checa_lista(): # copia do arq entrada p a lista principal
 def checa_inicio_fila(): # checa se inínico da fila principal está vazio
     # checa se há programas na lista principal
     if len(lista_principal) != 0:
-        return (True)
+        return True
     else:
-        return(False)
+        return False
 
 
 def mapeia_memoria():   # mapeia memória e registra posições e quantidades de espaços vazios (espacos 0 e 1)
@@ -68,8 +68,8 @@ def mapeia_memoria():   # mapeia memória e registra posições e quantidades de
         espacos.pop(0)
 
     # busca séries de espaços e aloca na lista espaços
-    aux = [0,0]
-    for cont in range (0, len(memoria)):
+    aux = [0, 0]  # posicao, quantidade
+    for cont in range(0, len(memoria)):
         if memoria[cont] == 0:
             if aux[1] != 0:
                 aux[1] += 1
@@ -79,7 +79,7 @@ def mapeia_memoria():   # mapeia memória e registra posições e quantidades de
         else:
             if aux[1] != 0:
                 espacos.append(aux)
-                aux = [0,0]
+                aux = [0, 0]
 
     if aux[1]:
         espacos.append(aux)
@@ -87,7 +87,7 @@ def mapeia_memoria():   # mapeia memória e registra posições e quantidades de
 
 def ff():
     # percorre lista principal
-    for pos_programa in range (0, len(lista_principal)):
+    for pos_programa in range(0, len(lista_principal)):
         # verifica se programa pode ser alocado no espaço
         for cont in range (0, len(espacos)):
             if espacos[cont][1] >= lista_principal[pos_programa][3]:
@@ -153,25 +153,30 @@ def aloca(pos_programa, pos_memo):
     lista_principal[pos_programa][6] = pos_memo
     executando.append(lista_principal[pos_programa])
     lista_principal.pop(pos_programa)
-    for i in range (0, executando[-1][3]):
+    for i in range(0, executando[-1][3]):
         memoria[pos_memo + i] = 1
 
 
-def executa(): # reduz ciclo de execução
-    try:
-        for i in range (0, len(executando)):
-            executando[i][2] -= 1
-            if executando[i][2] == 0:
-                executando[i][2] = ciclo
-                for j in range (0, executando[i][3]):
-                    memoria[executando[i][6]+j] = 0
-                executados.append(executando[i])
-                executando.pop(i)
-    except:
-        return
+def executa():  # reduz ciclo de execução
+    # 0- IP
+    # 1- Ciclo de chegada
+    # 2- Ciclos para executar / ciclo em que foi executado
+    # 3- Tamanho
+    # 4- Tempo de espera (até entrar na memória)
+    # 5- Qntd Miss
+    # 6- Posição na memória
+    for processo in executando:
+        processo[2] -= 1
+        if processo[2] == 0:
+            processo[2] = ciclo
+            # coloca 0 nos blocos da memoria
+            for j in range(0, processo[3]):
+                memoria[processo[6]+j] = 0
+            executados.append(processo)
+            executando.remove(processo)
 
 
-def prox_ciclo(): # incrementa ciclo e checa fim da política
+def prox_ciclo():  # incrementa ciclo e checa fim da política
 
     global ciclo
     ciclo += 1
@@ -184,21 +189,23 @@ def prox_ciclo(): # incrementa ciclo e checa fim da política
     return True
 
 
-def abre_arquivo(tipo, politica): # abre ou fecha arquivos de saída
-    global saida_ff, saida_bf, saida_wf
+def abre_arquivo(abre, politica):  # abre ou fecha arquivos de saída
 
     # abre arquivos de saída
-    if tipo:
-        if politica == "Frist Fit":
+    if abre:
+        if politica == "First Fit":
+            global saida_ff
             saida_ff = open("saida_ff.txt", "w+")
         elif politica == "Best Fit":
+            global saida_bf
             saida_bf = open("saida_bf.txt", "w+")
         elif politica == "Worst Fit":
+            global saida_wf
             saida_wf = open("saida_wf.txt", "w+")
 
     # fecha arquivos de saída
     else:
-        if politica == "Frist Fit":
+        if politica == "First Fit":
             saida_ff.close()
         elif politica == "Best Fit":
             saida_bf.close()
@@ -206,17 +213,17 @@ def abre_arquivo(tipo, politica): # abre ou fecha arquivos de saída
             saida_wf.close()
 
 
-def imprime(politica): # chama função para escrever listas ou escreve política
+def imprime(politica):  # chama função para escrever listas ou escreve política
     global lista_principal, lista_principal, executados, executados, ciclo
 
-    if politica == "Frist Fit":
+    if politica == "First Fit":
         arquivo = saida_ff
     elif politica == "Best Fit":
         arquivo = saida_bf
     elif politica == "Worst Fit":
         arquivo = saida_wf
 
-    uso_memo = int((memoria.count(1)/TAM_MEM)*100) # Uso Memo
+    uso_memo = int((memoria.count(1)/TAM_MEM)*100)  # Uso Memo
 
     saida_log(ciclo, arquivo)
     saida_log(lista_principal, arquivo)
@@ -225,7 +232,7 @@ def imprime(politica): # chama função para escrever listas ou escreve polític
     saida_log(uso_memo, arquivo)
 
 
-def saida_log(lista, arquivo): # função para escrever listas
+def saida_log(lista, arquivo):  # função para escrever listas
     if isinstance(lista, list):
         for processo in lista:
             for dado in processo:
@@ -243,7 +250,7 @@ def saida_log(lista, arquivo): # função para escrever listas
 
 
 # lista de políticas aplicadas
-lista = ["Frist Fit", "Best Fit", "Worst Fit"]
+lista = ["First Fit", "Best Fit", "Worst Fit"]
 
 global_graficos()
 
@@ -255,11 +262,11 @@ for politica in lista:
     run = True
     inicializacao()
 
-    while(run):
+    while run:
         checa_lista()
         mapeia_memoria()
         if checa_inicio_fila():
-            if politica == "Frist Fit":
+            if politica == "First Fit":
                 ff()
             elif politica == "Best Fit":
                 bf()
