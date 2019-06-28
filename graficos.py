@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from MemConfig import TAM_BLOCO, TAM_MEM
 
-def global_graficos(): # inicia variáveis finais dos gráficos
+def global_graficos():  # inicia variáveis finais dos gráficos
     global y_espera, y_quantidade, y_tamanho, y_memoria, y_miss, x
     y_espera = []
     y_quantidade = []
@@ -11,7 +11,7 @@ def global_graficos(): # inicia variáveis finais dos gráficos
     x = []
 
 
-def inicio_graficos(): # inicia variáveis de cada política dos gráficos
+def inicio_graficos():  # inicia variáveis de cada política dos gráficos
     global tempo_medio_espera, qnt_buracos, tam_medio_buracos, uso_memo, lista_ciclo, erro_aloca
     tempo_medio_espera = []
     qnt_buracos = []
@@ -27,7 +27,7 @@ def parametros_graficos(lista_principal, memoria, espacos, executados, executand
     if espacos:
         for i in espacos:
             media += i[1]
-        media/=len(espacos)
+        media /= len(espacos)
     else:
         media = 0
 
@@ -60,7 +60,7 @@ def parametros_graficos(lista_principal, memoria, espacos, executados, executand
     erro_aloca.append(miss)
 
 
-def politica_graficos(): # aloca parametros da política
+def politica_graficos():  # aloca parametros da política
 
     y_espera.append(tempo_medio_espera)
     y_quantidade.append(qnt_buracos)
@@ -71,7 +71,7 @@ def politica_graficos(): # aloca parametros da política
     x.append(lista_ciclo)
 
 
-def plota(): # plota gráficos
+def plota():  # plota gráficos
     global y_espera, y_quantidade, y_tamanho, y_memoria, y_miss, x
 
     # definindo qual foi o maior tempo de execução para gerar os gráficos
@@ -103,126 +103,143 @@ def plota(): # plota gráficos
 
     # gráfico 1: uso da memória
     plt.subplot(3, 1, 1)
-    plt.ylim([0,100])
+    plt.ylim([0, 100])
     plt.plot(x, y_memoria[0], label="FF", color="blue")
     plt.title('Uso da memória\n')
     plt.grid(True)
     plt.legend()
 
     plt.subplot(3, 1, 2)
-    plt.ylim([0,100])
+    plt.ylim([0, 100])
     plt.plot(x, y_memoria[1], label="BF", color="green")
     plt.ylabel('%')
     plt.grid(True)
     plt.legend()
 
     plt.subplot(3, 1, 3)
-    plt.ylim([0,100])
+    plt.ylim([0, 100])
     plt.plot(x, y_memoria[2], label="WF", color="red")
     plt.xlabel('Ciclo')
     plt.grid(True)
     plt.legend()
 
     plt.savefig('1uso_memo.png')
-    plt.show()
+    plt.clf()
 
     # gráfico 2: quantidade de buracos
+    ymax = 0
+    for politica in y_quantidade:
+        polmax = max(politica)
+        if polmax > ymax:
+            ymax = polmax
+    ymax += 1
     plt.subplot(3, 1, 1)
-    plt.ylim([0,5])
+    plt.ylim([0, ymax])
     plt.plot(x, y_quantidade[0], label="FF", color="blue")
     plt.title('Quantidade de buracos na memória\n')
     plt.grid(True)
     plt.legend()
 
     plt.subplot(3, 1, 2)
-    plt.ylim([0,5])
+    plt.ylim([0, ymax])
     plt.plot(x, y_quantidade[1], label="BF", color="green")
     plt.ylabel('Nº de buracos')
     plt.grid(True)
     plt.legend()
 
     plt.subplot(3, 1, 3)
-    plt.ylim([0,5])
+    plt.ylim([0, ymax])
     plt.plot(x, y_quantidade[2], label="WF", color="red")
     plt.xlabel('Ciclo')
     plt.grid(True)
     plt.legend()
 
     plt.savefig('2qnt_buracos.png')
-    plt.show()
+    plt.clf()
 
     # gráfico 3: tamanho dos buracos
     plt.subplot(3, 1, 1)
-    plt.ylim([0,TAM_MEM])
+    plt.ylim([0, TAM_MEM])
     plt.plot(x, y_tamanho[0], label="FF", color="blue")
     plt.title('Tamanho dos buracos na memória\n')
     plt.grid(True)
     plt.legend()
 
     plt.subplot(3, 1, 2)
-    plt.ylim([0,TAM_MEM])
+    plt.ylim([0, TAM_MEM])
     plt.plot(x, y_tamanho[1], label="BF", color="green")
     plt.ylabel('kB')
     plt.grid(True)
     plt.legend()
 
     plt.subplot(3, 1, 3)
-    plt.ylim([0,TAM_MEM])
+    plt.ylim([0, TAM_MEM])
     plt.plot(x, y_tamanho[2], label="WF", color="red")
     plt.xlabel('Ciclo')
     plt.grid(True)
     plt.legend()
 
     plt.savefig('3tam_buracos.png')
-    plt.show()
+    plt.clf()
 
     # gráfico 4: tempo médio de espera
+    ymax = 0
+    for politica in y_espera:
+        polmax = max(politica)
+        if polmax > ymax:
+            ymax = polmax
+    ymax = int(ymax*1.2)
     plt.subplot(3, 1, 1)
-    plt.ylim([0,70])
+    plt.ylim([0, ymax])
     plt.plot(x, y_espera[0], label="FF", color="blue")
     plt.title('Tempo de espera por ciclo para entrar na memória\n')
     plt.grid(True)
     plt.legend()
 
     plt.subplot(3, 1, 2)
-    plt.ylim([0,70])
+    plt.ylim([0, ymax])
     plt.plot(x, y_espera[1], label="BF", color="green")
     plt.ylabel('Tempo')
     plt.grid(True)
     plt.legend()
 
     plt.subplot(3, 1, 3)
-    plt.ylim([0,70])
+    plt.ylim([0, ymax])
     plt.plot(x, y_espera[2], label="WF", color="red")
     plt.xlabel('Ciclo')
     plt.grid(True)
     plt.legend()
 
     plt.savefig('4media_espera.png')
-    plt.show()
+    plt.clf()
 
     # gráfico 5: quantidade de miss
-    y = 180
+    ymax = 0
+    for politica in y_miss:
+        polmax = max(politica)
+        if polmax > ymax:
+            ymax = polmax
+    ymax = int(ymax * 1.2)
     plt.subplot(3, 1, 1)
-    plt.ylim([0,y])
+    plt.ylim([0, ymax])
     plt.plot(x, y_miss[0], label="FF", color="blue")
     plt.title('Quantidade de erros de alocação por ciclo\n')
     plt.grid(True)
     plt.legend()
 
     plt.subplot(3, 1, 2)
-    plt.ylim([0,y])
+    plt.ylim([0, ymax])
     plt.plot(x, y_miss[1], label="BF", color="green")
     plt.ylabel('Erros')
     plt.grid(True)
     plt.legend()
 
     plt.subplot(3, 1, 3)
-    plt.ylim([0,y])
+    plt.ylim([0, ymax])
     plt.plot(x, y_miss[2], label="WF", color="red")
     plt.xlabel('Ciclo')
     plt.grid(True)
     plt.legend()
 
     plt.savefig('5erros.png')
-    plt.show()
+    plt.clf()
