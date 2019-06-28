@@ -529,38 +529,68 @@ class Ui_Dialog(object):
             ex[i].pop()
 
     def loopciclos(self):
-        global check, index_mem, ciclos, cpu, lp, ex, passo, listablocks
-        check = not(check)
+            global check, index_mem, ciclos, cpu, lp, ex, passo, listablocks, seletor, img_select
+            check = not(check)
 
-        while (check == False) and (ciclos<len(lp)):
-            #Esses comandos aqui gerenciam o loop sem dar crash na janela
-            QtWidgets.QApplication.processEvents()
-            QtCore.QThread.msleep(passo)
+            #if trata o erro do -1, ele inicializa todas as variaveis novamente
+            if (ciclos<0):
+                ciclos = 0
+                check = not(check)
+                self.lcdNumber.setProperty('value', ciclos)
+                seletor = (seletor*(-1))
+                img_select = not(img_select)
+                self.pushButton_3.setIcon(QtGui.QIcon(self.rw))
 
-            #esse if pinta os quadrados
-            if (len(lp[ciclos])>0):
-                for k in range(0, len(lp[ciclos])):
-                    index_mem = int(lp[ciclos][k][3])
-                    #loop parte da posição e vai até o a posição + o tamanho
-                    for i in range(int(lp[ciclos][k][6]), (index_mem + int(lp[ciclos][k][6]))):
-                        listablocks[i].setEnabled(False)
 
-            self.progressBar.setProperty('value', int(temp[ciclos][0]))
+            while (check == False) and (0<=ciclos<len(lp)):
+                #Esses comandos aqui gerenciam o loop sem dar crash na janela
+                QtWidgets.QApplication.processEvents()
+                QtCore.QThread.msleep(passo)
 
-            #esse if apaga os processos da memória
-            if (len(lp[ciclos])>0):
-                for k in range(0, len(lp[ciclos])):
-                    if int(lp[ciclos][k][2]) == 1:
+                #esse if pinta os quadrados
+                if (len(lp[ciclos])>0):
+                    for k in range(0, len(lp[ciclos])):
                         index_mem = int(lp[ciclos][k][3])
                         #loop parte da posição e vai até o a posição + o tamanho
                         for i in range(int(lp[ciclos][k][6]), (index_mem + int(lp[ciclos][k][6]))):
-                            listablocks[i].setEnabled(True)
+                            listablocks[i].setEnabled(False)
 
-            ciclos = ciclos + seletor
-            self.lcdNumber.setProperty('value', ciclos)
+                self.progressBar.setProperty('value', int(temp[ciclos][0]))
 
+                #esse if apaga os processos da memória
+                if (len(lp[ciclos])>0):
+                    for k in range(0, len(lp[ciclos])):
+                        if int(lp[ciclos][k][2]) == 1:
+                            index_mem = int(lp[ciclos][k][3])
+                            #loop parte da posição e vai até o a posição + o tamanho
+                            for i in range(int(lp[ciclos][k][6]), (index_mem + int(lp[ciclos][k][6]))):
+                                listablocks[i].setEnabled(True)
 
-    def voltaciclos(self):#RESOLVER O CICLO PARANDO EM -1
+                self.texto1.setText('')
+                for j in range(0, len(cpu[ciclos])):
+                    if cpu[ciclos][j][0] != '':
+                        self.texto1.append("id: {}, tam: {}, espera: {}, miss: {}".format(cpu[ciclos][j][0], cpu[ciclos][j][3], cpu[ciclos][j][4], cpu[ciclos][j][5]))
+                    else:
+                        self.texto1.append(cpu[ciclos][j][0])
+
+                self.texto2.setText('')
+                for j in range(0, len(lp[ciclos])):
+                    if lp[ciclos][j][0] != '':
+                        self.texto2.append("id: {}, tam: {}, ciclo: {}, pos: {}".format(lp[ciclos][j][0], lp[ciclos][j][3], lp[ciclos][j][2], lp[ciclos][j][6]))
+                    else:
+                        self.texto2.append(lp[ciclos][j][0])
+
+                self.texto1_2.setText('')
+                for j in range(0, len(ex[ciclos])):
+                    if ex[ciclos][j][0] != '':
+                        self.texto1_2.append("id: {}, tam: {}, ciclo: {}, miss: {}".format(ex[ciclos][j][0], ex[ciclos][j][3], ex[ciclos][j][2], ex[ciclos][j][5]))
+                    else:
+                        self.texto1_2.append(ex[ciclos][j][0])
+
+                ciclos = ciclos + seletor
+                self.lcdNumber.setProperty('value', ciclos)
+
+    def voltaciclos(self):
         global seletor, check, ciclos, img_select
         img_select = not(img_select)
         if img_select == True:
@@ -572,7 +602,7 @@ class Ui_Dialog(object):
 
     def somapasso(self, value):
         global passo
-        passo = 119 - value
+        passo = 129 - value
 
 if __name__ == "__main__":
     import sys
